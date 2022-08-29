@@ -2,9 +2,124 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wemakeprice-homework</title>
+    <!-- 합쳐지고 최소화된 최신 CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+    <!-- 부가적인 테마 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+    <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 </head>
+<style>
+
+    .main{
+        margin-top: 80px;
+        border: black;
+        border-radius: 2px;
+    }
+    h2{
+        margin-bottom: 40px;
+    }
+    .btn{
+        margin-bottom: 10px;
+    }
+</style>
 <body>
-<h2 th:text="${hello}"></h2>
+<div class="container main" style="border:1px solid #0f0e0e;">
+    <h2>위메프 과제_임종우</h2>
+    <form>
+        <div class="form-group">
+            <label for="inputUrl">URL(http 혹은 https)</label>
+            <input type="text" class="form-control" id="inputUrl" placeholder="url을 입력하세요">
+        </div>
+
+        <div class="form-group">
+            <select id="type" name="type" class="form-control">
+                <option value="no_tag">HTML 태그제외</option>
+                <option value="text">Text 전체</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="ouputSize">출력묶음단위(자연수)</label>
+            <input type="text" class="form-control" id="ouputSize" placeholder="단위를 입력해 주세요">
+        </div>
+
+        <button class="btn btn-default">출력</button>
+        <h3 id="errMsg" class="text-danger"></h3>
+    </form>
+
+    <h3>몫</h3>
+    <textarea id="quotient" class="form-control" rows="3"></textarea>
+
+    <h3>나머지</h3>
+    <textarea id="remainder" class="form-control" rows="3" style="margin-bottom: 30px;"></textarea>
+</div>
+
+
+
+<script th:inline="javascript">
+    $(".btn").click(function (e){
+        e.preventDefault();
+        let inputUrl = $("#inputUrl").val();
+        if(inputUrl.length < 1){
+            alert('url을 입력해 주세요.');
+            return;
+        }
+
+        let selectType = $("select[name=type]").val();
+        let outputSize = $("#ouputSize").val();
+        if(isNaN(outputSize) || outputSize < 1){
+            alert('자연수를 입력해 주세요.');
+            return;
+        }
+
+        let url;
+        if(selectType === 'no_tag'){
+            url = base64Encoding(inputUrl);
+        }else{
+            if(inputUrl.startsWith("http://")){
+                url = base64Encoding(inputUrl);
+            }else if(inputUrl.startsWith("https://")){
+                url = base64Encoding(inputUrl);
+            }else{
+                url = inputUrl;
+            }
+        }
+
+
+        $.ajax ({
+            url	: "/api/"+url+"/"+ selectType+"/"+ outputSize+"/quotient-remainder",
+            type	: "GET",
+            timeout : 3000,
+            dataType: "json",
+            success : function(data, status, xhr) {
+                if(data.status === 400){
+                    let errMsg = data.message;
+                    // console.log(errMsg);
+                    $("#errMsg").text(errMsg);
+                    return;
+                }
+                if(data.status === 200){
+
+                    $("#errMsg").text('');
+                    $("#quotient").val(data.data.quotient);
+                    $("#remainder").val(data.data.remainder);
+                }
+            },
+            error	: function(xhr, status, error) {
+                alert(xhr.responseText);
+            }
+        });
+    });
+
+    function base64Encoding(str){
+        return btoa(str);
+    }
+</script>
 </body>
 </html>
