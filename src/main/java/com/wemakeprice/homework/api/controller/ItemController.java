@@ -8,6 +8,7 @@ import com.wemakeprice.homework.api.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Base64Utils;
@@ -65,10 +66,18 @@ public class ItemController {
             return responseDto.badRequest("url 형식이 올바르지 않습니다.");
         }
 
-        String decodeUrl = getDecodeUrl(url);
-        log.info("Decode url: {}", decodeUrl);
 
-        final TextRequestDto requestDto = getTextRequestDto(decodeUrl, type, outputSize);
+        TextRequestDto requestDto;
+        // text 타입 중 url 형식 값 base64 인코딩된 경우
+        if(Base64.isBase64(url)){
+            String decodeUrl = getDecodeUrl(url);
+            log.info("Decode url: {}", decodeUrl);
+            requestDto = getTextRequestDto(decodeUrl, type, outputSize);
+        }else{
+            // url형식이 아닌 문자열
+            requestDto = getTextRequestDto(url, type, outputSize);
+        }
+
         final TextResponseDto textResponseDto = itemService.get(requestDto);
         return responseDto.ok(textResponseDto, "성공", HttpStatus.OK);
     }
