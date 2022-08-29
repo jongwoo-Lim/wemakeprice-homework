@@ -1,5 +1,7 @@
 package com.wemakeprice.homework.api.model.processor;
 
+import org.springframework.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,16 +11,19 @@ public class TextItemProcessor implements ItemProcessor{
 
     @Override
     public String process(String text) {
-        // 입력값이 영문,숫자인 지 체크
-        if(isAlphabetWithDigit(text)){
-            // 오름차순 정렬 및 교차
-            return sortTextAscWithCross(text);
-        }
+        if(StringUtils.hasText(text)){
+            // 입력값이 영문,숫자인 지 체크
+            if(isAlphabetWithDigit(text)){
+                // 오름차순 정렬 및 교차
+                return sortTextAscWithCross(text);
+            }
 
-        // 영문,숫자 필터
-        String filteredText = filterAlphabetWithDigit(text);
-        // 오름차순 정렬 및 교차
-        return sortTextAscWithCross(filteredText);
+            // 영문,숫자 필터
+            String filteredText = filterAlphabetWithDigit(text);
+            // 오름차순 정렬 및 교차
+            return sortTextAscWithCross(filteredText);
+        }
+        return "";
     }
 
     /**
