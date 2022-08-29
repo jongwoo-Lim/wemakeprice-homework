@@ -8,7 +8,7 @@ public class ItemReaderFactory {
         return switch (textRequestDto.getType()) {
             case NO_TAG -> new CrawlingItemReader(textRequestDto.getValue());
             case TEXT -> new TextItemReader(textRequestDto.getValue());
-            default -> throw new IllegalArgumentException("invalid type..");
+            default -> throw new IllegalArgumentException("유효하지 않는 타입입니다.");
         };
     }
 }
