@@ -1,4 +1,4 @@
-package com.wemakeprice.homework.model.processor;
+package com.wemakeprice.homework.model.reader;
 
 import com.wemakeprice.homework.api.common.RequestType;
 import com.wemakeprice.homework.api.dto.TextRequestDto;
