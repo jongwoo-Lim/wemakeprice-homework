@@ -40,7 +40,7 @@ public class ResponseDto {
                 .data(data)
                 .message(msg)
                 .build();
-        return ResponseEntity.badRequest().body(body);
+        return ResponseEntity.ok().body(body);
     }
 
 
