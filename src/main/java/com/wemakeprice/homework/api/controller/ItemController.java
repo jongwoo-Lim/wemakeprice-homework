@@ -8,7 +8,6 @@ import com.wemakeprice.homework.api.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Base64Utils;
@@ -21,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.beans.PropertyEditorSupport;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequiredArgsConstructor
@@ -69,7 +70,7 @@ public class ItemController {
 
         TextRequestDto requestDto;
         // text 타입 중 url 형식 값 base64 인코딩된 경우
-        if(Base64.isBase64(url)){
+        if(checkEncodingBase64(url)){
             String decodeUrl = getDecodeUrl(url);
             log.info("Decode url: {}", decodeUrl);
             requestDto = getTextRequestDto(decodeUrl, type, outputSize);
@@ -94,6 +95,16 @@ public class ItemController {
                 setValue(RequestType.fromValue(text));
             }
         });
+    }
+    /**
+     * base64 인코딩 여부
+     * @param url
+     * @return
+     */
+    private boolean checkEncodingBase64(String url){
+        Pattern pattern = Pattern.compile("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$");
+        Matcher matcher = pattern.matcher(url);
+        return matcher.find();
     }
 
     /**

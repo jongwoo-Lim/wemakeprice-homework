@@ -22,6 +22,7 @@ public class ItemServiceImpl implements ItemService{
         // 데이터 읽기
         item.load();
         // 데이터 가공
+        log.info("item value: {}", item.getValue());
         final String processedText = item.process();
 
         log.info("process Text: {}", processedText);
