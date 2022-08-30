@@ -65,14 +65,14 @@
 <script th:inline="javascript">
     $(".btn").click(function (e){
         e.preventDefault();
-        let inputUrl = $("#inputUrl").val();
+        let inputUrl = $("#inputUrl").val().trim();
         if(inputUrl.length < 1){
             alert('url을 입력해 주세요.');
             return;
         }
 
         let selectType = $("select[name=type]").val();
-        let outputSize = $("#ouputSize").val();
+        let outputSize = $("#ouputSize").val().trim();
         if(isNaN(outputSize) || outputSize < 1){
             alert('자연수를 입력해 주세요.');
             return;
