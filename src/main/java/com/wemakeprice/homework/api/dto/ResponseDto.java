@@ -45,6 +45,6 @@ public class ResponseDto {
 
 
     public ResponseEntity<?> badRequest(String msg) {
-        return badRequest(Collections.emptyList(), msg, HttpStatus.BAD_REQUEST);
+        return badRequest(Collections.emptyList(), msg, HttpStatus.OK);
     }
 }
